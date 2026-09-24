@@ -2,4 +2,7 @@
 bin/
 obj/
 *.csproj.user
+<<<<<<< HEAD
 firebase-service-account.json
+=======
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501

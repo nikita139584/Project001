@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 
+=======
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501
 namespace Project001
 {
     public class Program
@@ -9,6 +12,7 @@ namespace Project001
         {
             var builder = WebApplication.CreateBuilder(args);
 
+<<<<<<< HEAD
             // Репозитории
             builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
             builder.Services.AddScoped<IBlogRepository, BlogRepository>();
@@ -47,15 +51,34 @@ namespace Project001
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
+=======
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseRouting();
+<<<<<<< HEAD
             app.UseAuthorization();
 
             app.MapStaticAssets();
 
+=======
+
+            app.UseAuthorization();
+
+            app.MapStaticAssets();
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
@@ -64,4 +87,8 @@ namespace Project001
             app.Run();
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501

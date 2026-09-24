@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+<<<<<<< HEAD
 public class CommentsController : Controller
 {
     private readonly ICommentService _commentService;
@@ -126,5 +127,30 @@ public class CommentsController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+=======
+namespace Project001.Controllers
+{
+    public class CommentsController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        public IActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        public IActionResult Delete(int id)
+        {
+            return View();
+        }
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501
     }
 }

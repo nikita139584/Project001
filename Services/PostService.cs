@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿
 
 public class PostService : IPostService
@@ -44,3 +45,11 @@ public class PostService : IPostService
         return await _repository.ExistsAsync(id);
     }
 }
+=======
+﻿namespace Project001.Services
+{
+    public class PostService
+    {
+    }
+}
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501

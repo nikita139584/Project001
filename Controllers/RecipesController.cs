@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
+<<<<<<< HEAD
 public class RecipesController : Controller
 {
     private readonly IRecipeService _recipeService;
@@ -126,5 +127,25 @@ public class RecipesController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+=======
+namespace Project001.Controllers
+{
+    public class RecipesController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Details(int id)
+        {
+            return View();
+        }
+
+        public IActionResult Popular()
+        {
+            return View();
+        }
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501
     }
 }

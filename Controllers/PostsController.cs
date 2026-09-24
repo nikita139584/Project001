@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+<<<<<<< HEAD
 public class PostsController : Controller
 {
     private readonly IPostService _postService;
@@ -126,5 +127,25 @@ public class PostsController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+=======
+namespace Project001.Controllers
+{
+    public class PostsController : Controller
+    {
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        public IActionResult Details(int id)
+        {
+            return View();
+        }
+
+        public IActionResult Edit(int id)
+        {
+            return View();
+        }
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501
     }
 }

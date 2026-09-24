@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿public interface IRatingService
 {
     Task<List<Rating>> GetAllAsync();
@@ -8,3 +9,11 @@
     Task DeleteAsync(string id);
     Task<bool> ExistsAsync(string id);
 }
+=======
+﻿namespace Project001.Services
+{
+    public interface IRatingService
+    {
+    }
+}
+>>>>>>> b7ea5945b9b0ae07e3c87b3691ee5691d7ecb501
