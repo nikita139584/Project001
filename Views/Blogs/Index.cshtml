@@ -1,0 +1,247 @@
+﻿@model List<Blog>
+
+@{
+    ViewData["Title"] = "Блоги";
+}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background: #f5f7fb;
+                color: #222;
+            }
+
+            .container {
+                width: min(1100px, calc(100% - 40px));
+                margin: 40px auto;
+            }
+
+            h1 {
+                margin-bottom: 25px;
+            }
+
+            .panel,
+            .blog-card {
+                background: #fff;
+                border-radius: 14px;
+                padding: 24px;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            }
+
+            .panel h2,
+            .blog-card h2 {
+                margin-top: 0;
+            }
+
+            .form-grid {
+                display: grid;
+                gap: 15px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 600;
+            }
+
+            input,
+            textarea {
+                width: 100%;
+                padding: 11px 12px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                font: inherit;
+            }
+
+            textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+            .actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .button {
+                border: 0;
+                border-radius: 8px;
+                padding: 10px 16px;
+                font: inherit;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .button-primary {
+                background: #2563eb;
+                color: #fff;
+            }
+
+            .button-secondary {
+                background: #e5e7eb;
+                color: #222;
+            }
+
+            .button-warning {
+                background: #f59e0b;
+                color: #fff;
+            }
+
+            .button-danger {
+                background: #dc2626;
+                color: #fff;
+            }
+
+            .blog-meta {
+                color: #777;
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+
+            .blog-description {
+                white-space: pre-wrap;
+                line-height: 1.6;
+            }
+
+            .edit-form {
+                display: none;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid #ddd;
+            }
+
+            .edit-form.open {
+                display: block;
+            }
+
+            .empty {
+                text-align: center;
+                color: #777;
+                padding: 30px 0;
+            }
+
+            .validation-summary {
+                color: #b91c1c;
+                margin-top: 10px;
+            }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Блоги</h1>
+
+        <!-- Додавання блогу -->
+        <section class="panel">
+            <h2>Додати блог</h2>
+
+            <form method="post" action="@Url.Action("Create", "Blogs")">
+                @Html.AntiForgeryToken()
+
+                <div class="form-grid">
+                    <div>
+                        <label for="create-title">Назва</label>
+                        <input id="create-title" name="Title" type="text" required maxlength="200" placeholder="Введіть назву блогу" />
+                    </div>
+
+                    <div>
+                        <label for="create-description">Опис</label>
+                        <textarea id="create-description" name="Description" required placeholder="Введіть текст блогу"></textarea>
+                    </div>
+
+                    <input type="hidden" name="CreatedAt" value="@DateTime.UtcNow.ToString("O")" />
+                </div>
+
+                <div class="actions">
+                    <button class="button button-primary" type="submit">Додати блог</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Список блогів -->
+        <section>
+            <h2>Усі блоги</h2>
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="panel empty">
+                    Поки що блогів немає.
+                </div>
+            }
+            else
+            {
+                foreach (var blog in Model)
+                {
+                    <article class="blog-card">
+                        <div class="blog-meta">
+                            Створено: @blog.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                        </div>
+
+                        <h2>@blog.Title</h2>
+                        <div class="blog-description">@blog.Description</div>
+
+                        <div class="actions">
+                            <button class="button button-warning" type="button" data-target="edit-@blog.BlogId" onclick="toggleEdit(this)">
+                                Редагувати
+                            </button>
+
+                            <form method="post" action="@Url.Action("Delete", "Blogs", new { id = blog.BlogId })" onsubmit="return confirm('Ви точно хочете видалити цей блог?');">
+                                @Html.AntiForgeryToken()
+                                <button class="button button-danger" type="submit">Видалити</button>
+                            </form>
+                        </div>
+
+                        <!-- Форма редагування -->
+                        <form id="edit-@blog.BlogId" class="edit-form" method="post" action="@Url.Action("Edit", "Blogs", new { id = blog.BlogId })">
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" name="BlogId" value="@blog.BlogId" />
+                            <input type="hidden" name="CreatedAt" value="@blog.CreatedAt.ToString("O")" />
+
+                            <div class="form-grid">
+                                <div>
+                                    <label for="title-@blog.BlogId">Назва</label>
+                                    <input id="title-@blog.BlogId" name="Title" type="text" required maxlength="200" value="@blog.Title" />
+                                </div>
+
+                                <div>
+                                    <label for="description-@blog.BlogId">Опис</label>
+                                    <textarea id="description-@blog.BlogId" name="Description" required>@blog.Description</textarea>
+                                </div>
+                            </div>
+
+                            <div class="actions">
+                                <button class="button button-primary" type="submit">Зберегти зміни</button>
+                                <button class="button button-secondary" type="button" data-target="edit-@blog.BlogId" onclick="toggleEdit(this)">Скасувати</button>
+                            </div>
+                        </form>
+                    </article>
+                }
+            }
+        </section>
+    </main>
+
+    <script>
+            function toggleEdit(button) {
+                const form = document.getElementById(button.dataset.target);
+                if (!form) return;
+                form.classList.toggle('open');
+            }
+    </script>
+</body>
+</html>

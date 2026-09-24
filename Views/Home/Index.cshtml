@@ -1,0 +1,1028 @@
+﻿@*
+    Recipe.Site landing page — Razor view (ASP.NET Core MVC / Razor Pages).
+
+    Положите файл, например, в Views/Home/RecipeSite.cshtml
+    (для Razor Pages добавьте первой строкой директиву @page).
+    Картинки лежат в wwwroot/images/recipesite/ — путь в разметке: ~/images/recipesite/...
+
+    Layout = null: страница самодостаточная (свой <html>), _Layout.cshtml не нужен.
+    CSS и JS лежат прямо в этом файле, поэтому символ @ в @media экранирован как @@media.
+*@
+@{
+    Layout = null;
+    ViewData["Title"] = "Recipe.Site";
+}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+
+    @* Inter нужен только для макета редактора рецептов; сама страница использует системный шрифт (Segoe UI на Windows) *@
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+            :root {
+                --ink: #000;
+                --muted: #5b5b5b;
+                --line: #d9d9d9;
+                --soft: #f5f5f5;
+                --blue: #2b6ed7;
+                --green: #005c1f;
+                --sys: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            }
+
+            *, *::before, *::after {
+                box-sizing: border-box;
+            }
+
+            html {
+                -webkit-text-size-adjust: 100%;
+            }
+
+            body {
+                margin: 0;
+                background: #fff;
+                color: var(--ink);
+                font: 400 20px/1.4 var(--sys);
+                overflow-x: hidden;
+            }
+
+            a {
+                color: inherit;
+            }
+
+            h1, h2, h3, p, ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            ul {
+                list-style: none;
+            }
+
+            img {
+                display: block;
+                max-width: none;
+            }
+
+            .wrap {
+                width: min(1470px, 100% - 48px);
+                margin-inline: auto;
+            }
+
+            /* ---------- Header ---------- */
+            .site-header .wrap {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 14px 0;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 23px;
+                font-weight: 500;
+                letter-spacing: -.01em;
+                text-decoration: none;
+            }
+
+            .logo-mark {
+                width: 25px;
+                height: 25px;
+                border-radius: 5px;
+                background: var(--green);
+                display: grid;
+                place-items: center;
+            }
+
+                .logo-mark i {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: #3994ff;
+                }
+
+            .nav {
+                display: flex;
+                align-items: center;
+                gap: 29px;
+            }
+
+                .nav a {
+                    text-decoration: none;
+                    font-weight: 500;
+                }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                height: 42px;
+                padding: 0 15px;
+                border-radius: 6px;
+                font-weight: 500;
+                border: 0;
+                font-family: inherit;
+                font-size: inherit;
+                cursor: pointer;
+            }
+
+            .btn-light {
+                background: var(--soft);
+                margin-left: -4px;
+            }
+
+            .btn-blue {
+                background: var(--blue);
+                color: #fff !important;
+                margin-left: -8px;
+            }
+
+            .btn-black {
+                background: #000;
+                color: #fff;
+                height: 43px;
+                text-decoration: none;
+            }
+
+            /* ---------- Hero ---------- */
+            .hero {
+                display: grid;
+                grid-template-columns: minmax(0, 735px) 1fr;
+                column-gap: 140px;
+                align-items: start;
+            }
+
+            .hero-img {
+                width: 100%;
+                height: auto;
+            }
+
+            .hero-copy {
+                padding-top: 149px;
+            }
+
+            .hero h1 {
+                font-size: 46px;
+                line-height: 56px;
+                font-weight: 400;
+                letter-spacing: -.005em;
+            }
+
+            .features {
+                display: flex;
+                margin-top: 55px;
+                color: var(--muted);
+                line-height: 35px;
+            }
+
+                .features ul {
+                    width: 244px;
+                }
+
+            /* ---------- Showcase (example sites) ---------- */
+            .block {
+                border-top: 1px solid var(--line);
+            }
+
+            .hero + .block {
+                margin-top: 60px;
+            }
+
+            .showcase {
+                padding: 64px 0 60px;
+            }
+
+            .sc-head {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                margin-bottom: 31px;
+            }
+
+                .sc-head h2 {
+                    margin-right: 4px;
+                    font-size: 23px;
+                    line-height: 34px;
+                    font-weight: 500;
+                }
+
+            .tag {
+                background: var(--soft);
+                border-radius: 6px;
+                padding: 4px 10px;
+                font-size: 17.5px;
+                line-height: 24px;
+            }
+
+            .sc-arrows {
+                margin-left: auto;
+                display: flex;
+                gap: 23px;
+            }
+
+            .arrow {
+                width: 34px;
+                height: 34px;
+                padding: 0;
+                border: 0;
+                border-radius: 50%;
+                background: var(--soft);
+                color: #000;
+                display: grid;
+                place-items: center;
+                cursor: pointer;
+            }
+
+                .arrow:disabled {
+                    background: #fcfcfc;
+                    color: #c4c4c4;
+                    cursor: default;
+                }
+
+                .arrow svg {
+                    width: 18px;
+                    height: 18px;
+                }
+
+            .carousel {
+                display: flex;
+                gap: 62px;
+                padding-left: 10px;
+                overflow-x: auto;
+                margin-right: calc(50% - 50vw);
+                scrollbar-width: none;
+            }
+
+                .carousel::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .carousel img {
+                    flex: none;
+                    height: auto;
+                    border-radius: 14px;
+                }
+
+            /* ---------- Intro + editor mock ---------- */
+            .intro {
+                padding: 80px 0 100px;
+            }
+
+            .two-col {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                column-gap: 100px;
+                align-items: start;
+            }
+
+            .lead {
+                font-size: 33px;
+                line-height: 45.7px;
+            }
+
+            .aside p {
+                color: var(--muted);
+                line-height: 33.3px;
+                margin-bottom: 20px;
+            }
+
+                .aside p:last-child {
+                    margin-bottom: 0;
+                }
+
+            .editor {
+                margin-top: 79px;
+                width: 881px;
+                max-width: 100%;
+                background: #fefefe;
+                border: 1px solid var(--soft);
+                border-radius: 12px;
+                box-shadow: 0 4px 22px rgba(0, 0, 0, .09);
+                overflow: hidden;
+                font-family: Inter, var(--sys);
+                color: #000;
+            }
+
+            .ed-bar {
+                display: flex;
+                align-items: center;
+                height: 40px;
+                padding: 0 26px 0 28px;
+                border-bottom: 1px solid #e2e2e2;
+                font-size: 13.5px;
+                white-space: nowrap;
+            }
+
+                .ed-bar .back {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    color: #222;
+                }
+
+                    .ed-bar .back svg {
+                        width: 14px;
+                        height: 14px;
+                    }
+
+                .ed-bar .sep {
+                    width: 1px;
+                    height: 18px;
+                    background: #cfcfcf;
+                    margin: 0 12px 0 9px;
+                }
+
+                .ed-bar .grow {
+                    flex: 1;
+                }
+
+                .ed-bar .status {
+                    color: #6b6b6b;
+                    margin-right: 17px;
+                }
+
+                .ed-bar .preview {
+                    margin-right: 17px;
+                }
+
+                .ed-bar .publish {
+                    background: #ebf0fa;
+                    color: #2b4a6f;
+                    border-radius: 6px;
+                    padding: 6px 10px;
+                }
+
+            .ed-body {
+                padding: 36px 28px 2px;
+            }
+
+                .ed-body h3 {
+                    font-size: 28px;
+                    line-height: 34px;
+                    font-weight: 700;
+                    letter-spacing: -.015em;
+                }
+
+                .ed-body .sub {
+                    margin-top: 7px;
+                    font-size: 13px;
+                    line-height: 20px;
+                }
+
+                .ed-body .cookie {
+                    margin-top: 13px;
+                    width: 476px;
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: 4px;
+                }
+
+                .ed-body h4 {
+                    margin: 56px 0 0;
+                    font-size: 20px;
+                    line-height: 28px;
+                    font-weight: 600;
+                }
+
+                .ed-body .story {
+                    margin-top: 7px;
+                    max-width: 665px;
+                    font-size: 13px;
+                    line-height: 20.5px;
+                }
+
+            .sp {
+                text-decoration: underline dotted #555;
+                text-underline-offset: 2px;
+            }
+
+            /* ---------- Plans ---------- */
+            .plans {
+                padding: 104px 0 99px;
+            }
+
+                .plans h2 {
+                    font-size: 38px;
+                    line-height: 44px;
+                    font-weight: 400;
+                    margin-bottom: 62px;
+                }
+
+            .plan-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                column-gap: 140px;
+            }
+
+            .plan h3 {
+                font-size: 27px;
+                line-height: 32px;
+                font-weight: 500;
+                margin-bottom: 12px;
+            }
+
+            .plan .price {
+                font-weight: 600;
+                line-height: 27.5px;
+                margin-bottom: 10px;
+            }
+
+            .plan li, .plan .desc {
+                line-height: 27.5px;
+                margin-bottom: 5px;
+            }
+
+            .plan a.example {
+                display: block;
+                color: var(--muted);
+            }
+
+            .plan .btn-black {
+                margin-top: 25px;
+            }
+
+            .plans .note {
+                margin-top: 96px;
+                max-width: 660px;
+                color: var(--muted);
+                line-height: 27.5px;
+            }
+
+            /* ---------- Different ---------- */
+            .diff {
+                padding: 101px 0 60px;
+            }
+
+                .diff .lead + .lead {
+                    margin-top: 40px;
+                }
+
+                .diff .lead strong {
+                    font-weight: 700;
+                }
+
+            /* ---------- Updates ---------- */
+            .updates {
+                padding: 64px 0 120px;
+                text-align: center;
+            }
+
+                .updates h2 {
+                    font-size: 27px;
+                    line-height: 32px;
+                    font-weight: 500;
+                }
+
+                .updates p {
+                    max-width: 480px;
+                    margin: 32px auto 0;
+                    color: var(--muted);
+                    line-height: 28px;
+                }
+
+            .subscribe {
+                display: flex;
+                justify-content: center;
+                margin-top: 38px;
+            }
+
+                .subscribe input {
+                    width: 382px;
+                    max-width: 62vw;
+                    height: 43px;
+                    padding: 0 15px;
+                    border: 1px solid var(--line);
+                    border-right: 0;
+                    border-radius: 6px 0 0 6px;
+                    font: inherit;
+                    outline: none;
+                }
+
+                    .subscribe input::placeholder {
+                        color: #6f6f6f;
+                    }
+
+                    .subscribe input:focus-visible {
+                        box-shadow: inset 0 0 0 2px var(--blue);
+                    }
+
+                .subscribe button {
+                    width: 118px;
+                    height: 43px;
+                    border: 0;
+                    border-radius: 0 6px 6px 0;
+                    background: #000;
+                    color: #fff;
+                    font: 500 20px var(--sys);
+                    cursor: pointer;
+                }
+
+            /* ---------- Footer ---------- */
+            .site-footer {
+                background: var(--soft);
+                padding: 60px 0;
+                color: var(--muted);
+            }
+
+                .site-footer .wrap {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 40px;
+                }
+
+                .site-footer p {
+                    line-height: 28px;
+                    margin-bottom: 19px;
+                }
+
+                    .site-footer p:last-child {
+                        margin-bottom: 0;
+                    }
+
+                .site-footer .fine {
+                    max-width: 420px;
+                }
+
+            .footer-links {
+                text-align: right;
+            }
+
+                .footer-links a {
+                    display: block;
+                    line-height: 28px;
+                    margin-bottom: 9.5px;
+                }
+
+                    .footer-links a:last-child {
+                        margin-bottom: 0;
+                    }
+
+            a:focus-visible, button:focus-visible {
+                outline: 2px solid var(--blue);
+                outline-offset: 2px;
+            }
+
+            /* ---------- Responsive ---------- */
+            @@media (max-width: 1000px) {
+                .hero {
+                    grid-template-columns: 1fr;
+                    row-gap: 32px;
+                }
+
+                .hero-copy {
+                    padding-top: 0;
+                }
+
+                .hero h1 {
+                    font-size: 34px;
+                    line-height: 1.2;
+                }
+
+                .br-lg {
+                    display: none;
+                }
+
+                .features {
+                    margin-top: 32px;
+                }
+
+                    .features ul {
+                        width: 50%;
+                    }
+
+                .two-col {
+                    grid-template-columns: 1fr;
+                    row-gap: 32px;
+                }
+
+                .lead {
+                    font-size: 26px;
+                    line-height: 1.4;
+                }
+
+                .plan-grid {
+                    grid-template-columns: 1fr;
+                    row-gap: 48px;
+                }
+
+                .plans .note {
+                    margin-top: 56px;
+                }
+
+                .site-footer .wrap {
+                    flex-direction: column;
+                }
+
+                .footer-links {
+                    text-align: left;
+                }
+
+                .nav {
+                    gap: 16px;
+                }
+
+                    .nav .hide-sm {
+                        display: none;
+                    }
+
+                .ed-bar .status, .ed-bar .sep, .ed-bar .title {
+                    display: none;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="wrap">
+            <a class="logo" href="~/">
+                <span class="logo-mark" aria-hidden="true"><i></i></span>
+                Recipe.Site
+            </a>
+            <nav class="nav" aria-label="Головна">
+                <a class="hide-sm" href="#plans">Тарифи</a>
+                <a class="hide-sm" href="#about">Про нас</a>
+                <a class="hide-sm" href="/Blogs">Блог</a>
+                <a class="btn btn-light" href="#">Увійти</a>
+                <a class="btn btn-blue" href="#">Почати</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        @* ============ HERO ============ *@
+        <section class="wrap hero">
+            <img class="hero-img" src="~/images/recipesite/hero.jpg" width="735" height="799" alt="Grandmother grating cheese in a kitchen" />
+
+            <div class="hero-copy">
+                <h1>
+                    Красиві та функціональні<br class="br-lg" />
+                    сайти з рецептами,<br class="br-lg" />
+                    розсилки та<br class="br-lg" />
+                    цифрові кулінарні книги
+                </h1>
+
+                <div class="features">
+                    <ul>
+                        <li>Редактор рецептів та CMS</li>
+                        <li>Розсилки</li>
+                        <li>Підписки</li>
+                        <li>Платний доступ</li>
+                        <li>Облікові записи користувачів</li>
+                        <li>Рекламні плагіни</li>
+                        <li>SEO</li>
+                        <li>Хостинг</li>
+                        <li>Власні домени</li>
+                        <li>Власний дизайн</li>
+                    </ul>
+                    <ul>
+                        <li>Переведення з US у метричну систему</li>
+                        <li>Масштабування</li>
+                        <li>Таймери</li>
+                        <li>Теги та фільтри</li>
+                        <li>Коментарі</li>
+                        <li>Оцінки</li>
+                        <li>Закладки</li>
+                        <li>Відео</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        @* ============ SHOWCASE: h woo lee ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2>h woo lee</h2>
+                <span class="tag">сайт</span>
+                <span class="tag">розсилка</span>
+                <span class="tag">підписки</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <img src="~/images/recipesite/hwoo-1.png" width="250" height="550" alt="h woo — mobile view with featured recipes" />
+                <img src="~/images/recipesite/hwoo-2.png" width="1003" height="550" alt="h woo — desktop view with featured recipes" />
+                <img src="~/images/recipesite/hwoo-3.png" width="251" height="550" alt="h woo — recipe ingredients and instructions" />
+            </div>
+        </section>
+
+        @* ============ SHOWCASE: Katie Parla, Rome ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2>Katie Parla, Rome</h2>
+                <span class="tag">цифрова кулінарна книга</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <img src="~/images/recipesite/katie-1.png" width="250" height="549" alt="Rome cookbook — mobile title page" />
+                <img src="~/images/recipesite/katie-2.png" width="250" height="549" alt="Rome cookbook — table of contents" />
+                <img src="~/images/recipesite/katie-3.png" width="1005" height="549" alt="Rome cookbook — Picchiapò recipe page" />
+            </div>
+        </section>
+
+        @* ============ INTRO + EDITOR ============ *@
+        <section class="wrap block intro">
+            <div class="two-col">
+                <div>
+                    <p class="lead">
+                        Recipe.Site — це інструмент для публікації контенту для авторів кулінарних матеріалів. Основою є редактор рецептів та CMS.
+                        На цій основі є набір функцій, які допомагають авторам розвивати свій бізнес та
+                        спільноту — підписки, розсилки, облікові записи користувачів, коментарі, закладки, платний доступ, рекламні плагіни,
+                        пошук і фільтри, переведення між US та метричною системами, таймери та багато іншого. Це поєднання найкращих частин
+                        <em>Substack</em> у поєднанні з <em>New York Times Cooking</em>.
+                    </p>
+
+                    <div class="editor" role="img" aria-label="Recipe editor: S’mores Chocolate Chip Cookies">
+                        <div class="ed-bar">
+                            <span class="back">
+                                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2 4 7l5 5" /></svg>
+                                Усі рецепти
+                            </span>
+                            <span class="sep"></span>
+                            <span class="title">S’mores Chocolate Chip Cookies</span>
+                            <span class="grow"></span>
+                            <span class="status">✓ Збережено</span>
+                            <span class="status">Чернетка</span>
+                            <span class="preview">Попередній перегляд</span>
+                            <span class="publish">Опублікувати та надіслати розсилку</span>
+                        </div>
+                        <div class="ed-body">
+                            <h3>S’mores Chocolate Chip Cookies</h3>
+                            <p class="sub">Небесне поєднання тягучого маршмелоу, насиченого шоколаду та золотистого печива</p>
+                            <img class="cookie" src="~/images/recipesite/cookie.png" width="476" height="318" alt="S’mores chocolate chip cookie" />
+                            <h4>Історія</h4>
+                            <p class="story">
+                                Here’s the thing about <span class="sp">s’mores</span> desserts: they’re never that good. I actually try to avoid ordering anything
+                                <span class="sp">s’mores</span> because I know it’ll lead to severe disappointment. Don’t get me wrong—<span class="sp">s’mores</span> themselves are a
+                                godsend. We had a <span class="sp">firepit</span> growing up and would invite people over every weekend in the summertime with
+                                the intention of making <span class="sp">s’mores</span>. It was a non-negotiable.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aside">
+                    @* На скриншотах виден только этот фрагмент правой колонки. Если над ним есть ещё текст — добавьте <p> выше. *@
+                    <p>Для великих авторів ми можемо створювати повністю індивідуальні рішення та допомагати керувати цифровим бізнесом.</p>
+                    <p>Якщо у вас є сайт на іншій платформі і ви не хочете переходити, у деяких випадках ми можемо вбудувати окремі функції — наприклад, розширені сторінки рецептів — у ваш наявний сайт.</p>
+                </div>
+            </div>
+        </section>
+
+        @* ============ SHOWCASE: Krizkitch ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2>Krizkitch</h2>
+                <span class="tag">сайт</span>
+                <span class="tag">розсилка</span>
+                <span class="tag">підписки</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <img src="~/images/recipesite/kriz-1.png" width="250" height="509" alt="Krizkitch — mobile view with featured recipes" />
+                <img src="~/images/recipesite/kriz-2.png" width="250" height="509" alt="Krizkitch — ingredients and instructions" />
+                <img src="~/images/recipesite/kriz-3.png" width="1005" height="509" alt="Krizkitch — desktop view with featured recipes and collections" />
+            </div>
+        </section>
+
+        @* ============ SHOWCASE: Mixtures ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2>Mixtures, Community cookbook</h2>
+                <span class="tag">цифрова кулінарна книга</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <img src="~/images/recipesite/mix-1.png" width="1003" height="548" alt="Mixtures Vol. 1 — community cookbook cover" />
+                <img src="~/images/recipesite/mix-2.png" width="250" height="548" alt="Mixtures — Luk Chup recipe" />
+                <img src="~/images/recipesite/mix-3.png" width="280" height="548" alt="Mixtures — Savoury chapter" />
+            </div>
+        </section>
+
+        @* ============ PLANS & PRICING ============ *@
+        <section class="wrap block plans" id="plans">
+            <h2>Тарифи та ціни</h2>
+
+            <div class="plan-grid">
+                <div class="plan">
+                    <h3>Особистий</h3>
+                    <p class="price">$4/month</p>
+                    <ul>
+                        <li>Необмежена кількість опублікованих рецептів</li>
+                    </ul>
+                    <p class="desc">Чудово підходить для особистого використання (збір та організація сімейних рецептів тощо)</p>
+                    <a class="example desc" href="#">Приклад</a>
+                    <div><a class="btn btn-black" href="#">Спробувати безкоштовно</a></div>
+                </div>
+
+                <div class="plan">
+                    <h3>Автор</h3>
+                    <p class="price">$32/month*</p>
+                    <ul>
+                        <li>Платний доступ &amp; subscriptions</li>
+                        <li>Розсилки</li>
+                        <li>Налаштування (шрифти, кольори, логотип)</li>
+                        <li>Коментарі &amp; ratings</li>
+                        <li>Інтеграція реклами</li>
+                        <li>Публікації</li>
+                        <li>Власний домен</li>
+                    </ul>
+                    <a class="example desc" href="#">Приклад</a>
+                </div>
+
+                <div class="plan">
+                    <h3>Професійний</h3>
+                    <p class="price">$250–500/month*</p>
+                    <ul>
+                        <li>Власні сторінки</li>
+                        <li>Власний дизайн</li>
+                        <li>Власні функції</li>
+                        <li>Індивідуальне обслуговування та підтримка</li>
+                    </ul>
+                    <a class="example desc" href="#">Приклад</a>
+                </div>
+            </div>
+
+            <p class="note">*Окрім вартості тарифу, ми беремо 6% від доходу з підписок і кулінарних книг, максимум $4 000 на місяць.</p>
+        </section>
+
+        @* ============ SHOWCASE: Ryan Nordheimer ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2>Ryan Nordheimer</h2>
+                <span class="tag">сайт</span>
+                <span class="tag">інтеграція реклами</span>
+                <span class="tag">підписки</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <img src="~/images/recipesite/ryan-1.png" width="250" height="550" alt="Ryan Nordheimer — mobile recipe page" />
+                <img src="~/images/recipesite/ryan-2.png" width="1003" height="550" alt="Ryan Nordheimer — desktop recipe page with ad" />
+                <img src="~/images/recipesite/ryan-3.png" width="251" height="550" alt="Ryan Nordheimer — recipe search and filters" />
+            </div>
+        </section>
+
+        @* ============ SHOWCASE: Drugstore ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2>Drugstore</h2>
+                <span class="tag">дизайн бренду</span>
+                <span class="tag">артдирекція</span>
+                <span class="tag">сайт</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <img src="~/images/recipesite/drug-1.png" width="250" height="548" alt="Drugstore — mobile view" />
+                <img src="~/images/recipesite/drug-2.png" width="1003" height="548" alt="Drugstore — desktop view" />
+                <img src="~/images/recipesite/drug-3.png" width="298" height="548" alt="Drugstore — branded cup" />
+            </div>
+        </section>
+
+        @* ============ HOW ARE WE DIFFERENT ============ *@
+        <section class="wrap block diff" id="about">
+            <div class="two-col">
+                <div>
+                    <p class="lead">
+                        Чим ми відрізняємося? We are equally focused on <strong>робота з рецептами</strong>
+                        (публікація та читання/приготування), <strong>дизайн</strong>, and <strong>технології</strong>.
+                        Ми вважаємо, що наша увага до всіх трьох напрямків дозволяє нам створювати
+                        best-in-class recipe websites and цифрові кулінарні книги.
+                    </p>
+                    <p class="lead">
+                        Які є альтернативні інструменти? Альтернативні інструменти для публікації рецептів поділяються на дві групи:
+                        <em>універсальні конструктори сайтів</em> (WordPress, Squarespace, Wix), and
+                        <em>платформи для публікації контенту</em> (Instagram, Substack, Професійнийvecho).
+                    </p>
+                </div>
+
+                <div class="aside">
+                    <p>
+                        Our differentiation from <em>універсальні конструктори сайтів</em> is that Recipe.Site is purpose-built for
+                        публікації рецептів та монетизації. Інші конструктори сайтів дають вам чистий шаблон і залишають вам
+                        налаштування та підтримку всього іншого — форматування рецептів, підписок, платного доступу, розсилок, реклами.
+                        Для цього доводиться поєднувати плагіни та сторонні інструменти. Ми робимо цю роботу за вас;
+                        усе вже інтегровано. Іншими словами, ми обмінюємо широку функціональність на те, щоб бути справді
+                        сильними в кількох конкретних напрямках.
+                    </p>
+                    <p>
+                        Our differentiation from <em>платформи для публікації контенту</em> is that we are not a container your
+                        content sits within—we are the технології your website is built on top of. У вас немає
+                        «профілю» або «сторінки» на нашій платформі; ви використовуєте наші інструменти, щоб створити власний сайт (або ми допомагаємо
+                        вам це зробити). Іншими словами, ми обмінюємо мережеве відкриття контенту та динаміку соціальних мереж на
+                        володіння, контроль, налаштування та незалежність.
+                    </p>
+                    @* На скриншотах виден только конец этого абзаца — начало нужно дописать. *@
+                    <p>
+                        …бізнесом та незалежність володіння своїм сайтом і аудиторією. Більше інформації в нашій
+                        <a href="#">публікації в блозі</a>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        @* ============ PROJECT UPDATES ============ *@
+        <section class="wrap block updates">
+            <h2>Професійнийject updates</h2>
+            <p>Кожні кілька місяців ми надсилаємо електронний лист із повідомленнями про нові функції, майбутні плани тощо.</p>
+            <form class="subscribe" action="#" method="post">
+                <input type="email" name="email" placeholder="Введіть свою електронну пошту..." aria-label="Email" />
+                <button type="submit">Підписатися</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">
+            <div>
+                <p><a href="~/">Recipe.Site</a> — це інструмент для публікації контенту для авторів кулінарних матеріалів</p>
+                <p class="fine">Ми будемо раді почути вашу думку. Надсилайте відгуки на alex@@recipe.site</p>
+                <p>© 2026 Recipe.Site</p>
+            </div>
+            <nav class="footer-links" aria-label="Footer">
+                <a href="#">Почати</a>
+                <a href="#plans">Тарифи</a>
+                <a href="#about">Про нас</a>
+                <a asp-controller="Blogs" asp-action="Create">Блог</a>
+                <a href="#">Умови</a>
+                <a href="#">@@recipe.site</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+            (function () {
+                document.querySelectorAll('.showcase').forEach(function (section) {
+                    var track = section.querySelector('.carousel');
+                    var prev = section.querySelector('[data-dir="prev"]');
+                    var next = section.querySelector('[data-dir="next"]');
+                    if (!track || !prev || !next) return;
+
+                    function update() {
+                        var atStart = track.scrollLeft <= 1;
+                        var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+                        prev.disabled = atStart;
+                        next.disabled = atEnd && !atStart;
+                    }
+
+                    function go(dir) {
+                        track.scrollBy({ left: dir * track.clientWidth * 0.8, behavior: 'smooth' });
+                    }
+
+                    prev.addEventListener('click', function () { go(-1); });
+                    next.addEventListener('click', function () { go(1); });
+                    track.addEventListener('scroll', update, { passive: true });
+                    window.addEventListener('resize', update);
+                    update();
+                });
+            })();
+    </script>
+</body>
+</html>
