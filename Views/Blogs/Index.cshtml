@@ -1,0 +1,132 @@
+﻿@model List<Blog>
+
+@{
+    ViewData["Title"] = "Блоги";
+}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/blogs.css" />
+</head>
+<body>
+        <header class="site-header">
+        <div class="wrap">
+            <a class="logo" href="/">
+                <span class="logo-mark" aria-hidden="true"><i></i></span>
+                Recipe.Site
+            </a>
+
+            <nav class="nav" aria-label="Головна">
+                <a href="/">Головна</a>
+                <a href="/Blogs">Блог</a>
+                <a href="/Recipes">Рецепти</a>
+                <a class="btn btn-blue" href="#">Зареєструватися</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <h1>Блоги</h1>
+
+        <!-- Додавання блогу -->
+        <section class="panel">
+            <h2>Додати блог</h2>
+
+            <form method="post" action="@Url.Action("Create", "Blogs")">
+                @Html.AntiForgeryToken()
+
+                <div class="form-grid">
+                    <div>
+                        <label for="create-title">Назва</label>
+                        <input id="create-title" name="Title" type="text" required maxlength="200" placeholder="Введіть назву блогу" />
+                    </div>
+
+                    <div>
+                        <label for="create-description">Опис</label>
+                        <textarea id="create-description" name="Description" required placeholder="Введіть текст блогу"></textarea>
+                    </div>
+
+                    <input type="hidden" name="CreatedAt" value="@DateTime.UtcNow.ToString("O")" />
+                </div>
+
+                <div class="actions">
+                    <button class="button button-primary" type="submit">Додати блог</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Список блогів -->
+        <section>
+            <h2>Усі блоги</h2>
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="panel empty">
+                    Поки що блогів немає.
+                </div>
+            }
+            else
+            {
+                foreach (var blog in Model)
+                {
+                    <article class="blog-card">
+                        <div class="blog-meta">
+                            Створено: @blog.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                        </div>
+
+                        <h2>@blog.Title</h2>
+                        <div class="blog-description">@blog.Description</div>
+
+                        <div class="actions">
+                            <button class="button button-warning" type="button" data-target="edit-@blog.BlogId" onclick="toggleEdit(this)">
+                                Редагувати
+                            </button>
+
+                            <form method="post" action="@Url.Action("Delete", "Blogs", new { id = blog.BlogId })" onsubmit="return confirm('Ви точно хочете видалити цей блог?');">
+                                @Html.AntiForgeryToken()
+                                <button class="button button-danger" type="submit">Видалити</button>
+                            </form>
+                        </div>
+
+                        <!-- Форма редагування -->
+                        <form id="edit-@blog.BlogId" class="edit-form" method="post" action="@Url.Action("Edit", "Blogs", new { id = blog.BlogId })">
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" name="BlogId" value="@blog.BlogId" />
+                            <input type="hidden" name="CreatedAt" value="@blog.CreatedAt.ToString("O")" />
+
+                            <div class="form-grid">
+                                <div>
+                                    <label for="title-@blog.BlogId">Назва</label>
+                                    <input id="title-@blog.BlogId" name="Title" type="text" required maxlength="200" value="@blog.Title" />
+                                </div>
+
+                                <div>
+                                    <label for="description-@blog.BlogId">Опис</label>
+                                    <textarea id="description-@blog.BlogId" name="Description" required>@blog.Description</textarea>
+                                </div>
+                            </div>
+
+                            <div class="actions">
+                                <button class="button button-primary" type="submit">Зберегти зміни</button>
+                                <button class="button button-secondary" type="button" data-target="edit-@blog.BlogId" onclick="toggleEdit(this)">Скасувати</button>
+                            </div>
+                        </form>
+                    </article>
+                }
+            }
+        </section>
+    </main>
+
+    <script>
+            function toggleEdit(button) {
+                const form = document.getElementById(button.dataset.target);
+                if (!form) return;
+                form.classList.toggle('open');
+            }
+    </script>
+</body>
+</html>

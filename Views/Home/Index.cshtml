@@ -1,0 +1,447 @@
+﻿@*
+    Recipe.Site landing page — Razor view (ASP.NET Core MVC / Razor Pages).
+
+    Положите файл, например, в Views/Home/RecipeSite.cshtml
+    (для Razor Pages добавьте первой строкой директиву @page).
+
+    CSS вынесен в отдельный файл: wwwroot/css/index.css
+    (путь в разметке ниже: ~/css/index.css).
+
+    ВНИМАНИЕ: в CSS, который вы прислали, в середину правила .logo-mark
+    случайно вклеился целый посторонний файл стилей (судя по классам —
+    страница редактора рецептов: .editor-bar, .title-input, .floating-tools
+    и т.д.). Я его вырезал — иначе это ломало и .logo-mark, и всё, что
+    после него. Заодно убрал классы .sz-*, они больше нигде не используются
+    (Krizkitch/Mixtures/Ryan теперь тоже на единой сетке .little-img/.big-img/
+    .normal-img/.video-card).
+
+    Размеры карточек в каруселях примеров сайтов заданы едиными классами:
+    .video-card (200x440), .little-img (233x440), .normal-img (350x440),
+    .big-img (770x440) — все с одинаковой высотой.
+
+    Параметр &w= у ссылок на .../_next/image подобран под реальный размер
+    показа (с запасом x2 под retina): little/video → w=640, normal → w=750,
+    big → w=1920.
+
+    ВАЖНО: это чужие изображения и видео с чужого сервера (img.recipe.site,
+    file.recipe.site) — они могут закрыть хотлинк в любой момент, и это
+    формально их авторский контент. Для продакшена лучше скачать нужные
+    файлы (если есть право их использовать) и положить в
+    wwwroot/images/recipesite/ и wwwroot/video/recipesite/.
+
+    Layout = null: страница самодостаточная (свой <html>), _Layout.cshtml не нужен.
+*@
+@{
+    Layout = null;
+    ViewData["Title"] = "Recipe.Site";
+}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+
+    @* Inter нужен только для макета редактора рецептов; сама страница использует системный шрифт (Segoe UI на Windows) *@
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/css/index.css" />
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="wrap">
+            <a class="logo" href="~/">
+                
+                <span class="logo-mark" aria-hidden="true"><i></i></span>
+                Recipe.Site
+            </a>
+            <nav class="nav" aria-label="Головна">
+                <a href="/Blogs">Блог</a>
+                <a href="/Recipes">Рецепти</a>
+                <a class="btn btn-blue" href="#">Зареєструватися</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        @* ============ HERO ============ *@
+        <section class="wrap hero">
+            <img class="hero-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fhomepage-hero-image-cooking%2520copy.webp%3Foptimizer%3Dimage&w=1200&q=75" alt="Бабуся тре сир на кухні" />
+
+            <div class="hero-copy">
+                <h1>
+                    Красиві та функціональні<br class="br-lg" />
+                    сайти з рецептами,<br class="br-lg" />
+                    розсилки та<br class="br-lg" />
+                    цифрові кулінарні книги
+                </h1>
+
+                <div class="features">
+                    <ul>
+                        <li>Редактор рецептів та CMS</li>
+                        <li>Розсилки</li>
+                        <li>Підписки</li>
+                        <li>Платний доступ</li>
+                        <li>Облікові записи користувачів</li>
+                        <li>Рекламні плагіни</li>
+                        <li>SEO</li>
+                        <li>Хостинг</li>
+                        <li>Власні домени</li>
+                        <li>Власний дизайн</li>
+                    </ul>
+                    <ul>
+                        <li>Переведення з US у метричну систему</li>
+                        <li>Масштабування</li>
+                        <li>Таймери</li>
+                        <li>Теги та фільтри</li>
+                        <li>Коментарі</li>
+                        <li>Оцінки</li>
+                        <li>Закладки</li>
+                        <li>Відео</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        @* ============ ЧАСТИНА 1: h woo lee ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <span class="tag">сайт</span>
+                <span class="tag">розсилка</span>
+                <span class="tag">підписки</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <video class="video-card" controls muted playsinline>
+                    <source src="https://file.recipe.site/marketing_homepage_hwoo_01.mp4" type="video/mp4">
+                    Ваш браузер не підтримує відтворення відео.
+                </video>
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_hwoo_02.webp%3Foptimizer%3Dimage&w=640&q=75" alt="h woo — сторінка рецепту Tonkatsu" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_hwoo_03.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="h woo — вигляд для десктопа з рекомендованими рецептами" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_hwoo_04.webp%3Foptimizer%3Dimage&w=640&q=75" alt="h woo — інгредієнти та інструкції рецепту" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_hwoo_05.webp%3Foptimizer%3Dimage&w=640&q=75" alt="h woo — інгредієнти та інструкції рецепту" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_hwoo_06.webp%3Foptimizer%3Dimage&w=640&q=75" alt="h woo — інгредієнти та інструкції рецепту" />
+            </div>
+        </section>
+
+        @* ============ ЧАСТИНА 2: Katie Parla, Rome ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2>Katie Parla, Rome</h2>
+                <span class="tag">цифрова кулінарна книга</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <video class="video-card" controls muted playsinline>
+                    <source src="https://file.recipe.site/marketing_homepage_rome_01.mp4" type="video/mp4">
+                    Ваш браузер не підтримує відтворення відео.
+                </video>
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_rome_02.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Кулінарна книга «Рим» — сторінка 1" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_rome_03.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Кулінарна книга «Рим» — сторінка 2" />
+                <img class="normal-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_rome_04.webp%3Foptimizer%3Dimage&w=750&q=75" alt="Кулінарна книга «Рим» — сторінка 3" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_rome_05.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Кулінарна книга «Рим» — сторінка 4" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_rome_06.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Кулінарна книга «Рим» — сторінка 5" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_rome_07.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Кулінарна книга «Рим» — сторінка 6" />
+            </div>
+        </section>
+
+        @* ============ ЧАСТИНА 3: Cheffin' with Zach ============
+             Назва та теги — орієнтовні (взяті з назви файлів), поправте за потреби. *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2>Cheffin' with Zach</h2>
+                <span class="tag">сайт</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <video class="video-card" controls muted playsinline>
+                    <source src="https://file.recipe.site/cheffinwithzach.mp4" type="video/mp4">
+                    Ваш браузер не підтримує відтворення відео.
+                </video>
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_cheffinwithzach_01.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Cheffin' with Zach — сторінка 1" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_cheffinwithzach_02.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Cheffin' with Zach — сторінка 2" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_cheffinwithzach_03.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Cheffin' with Zach — сторінка 3" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_cheffinwithzach_04.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Cheffin' with Zach — сторінка 4" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_cheffinwithzach_05.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Cheffin' with Zach — сторінка 5" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_cheffinwithzach_06.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Cheffin' with Zach — сторінка 6" />
+            </div>
+        </section>
+
+        @* ============ INTRO + DEMO VIDEO ============
+             Раніше тут була підроблена "верстка" редактора рецептів (бо ми
+             не знали, що там насправді) — тепер замінено на реальне відео. *@
+        <section class="wrap block intro">
+            <div class="two-col">
+                <div>
+                    <p class="lead">
+                        Recipe.Site — це інструмент для публікації контенту для авторів кулінарних матеріалів. Основою є редактор рецептів та CMS.
+                        На цій основі є набір функцій, які допомагають авторам розвивати свій бізнес та
+                        спільноту — підписки, розсилки, облікові записи користувачів, коментарі, закладки, платний доступ, рекламні плагіни,
+                        пошук і фільтри, переведення між US та метричною системами, таймери та багато іншого. Це поєднання найкращих частин
+                        <em>Substack</em> у поєднанні з <em>New York Times Cooking</em>.
+                    </p>
+
+                    <video class="intro-video" controls muted playsinline>
+                        <source src="https://file.recipe.site/marketing_homepage_recipe_editor.mp4" type="video/mp4">
+                        Ваш браузер не підтримує відтворення відео.
+                    </video>
+                </div>
+
+                <div class="aside">
+                    @* На скриншотах виден только этот фрагмент правой колонки. Если над ним есть ещё текст — добавьте <p> выше. *@
+                    <p>Для великих авторів ми можемо створювати повністю індивідуальні рішення та допомагати керувати цифровим бізнесом.</p>
+                    <p>Якщо у вас є сайт на іншій платформі і ви не хочете переходити, у деяких випадках ми можемо вбудувати окремі функції — наприклад, розширені сторінки рецептів — у ваш наявний сайт.</p>
+                </div>
+            </div>
+        </section>
+
+        @* ============ Krizkitch ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2><a href="https://www.krizkitch.com/" target="_blank" rel="noopener noreferrer">Krizkitch</a></h2>
+                <span class="tag">сайт</span>
+                <span class="tag">розсилка</span>
+                <span class="tag">підписки</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <video class="video-card" controls muted playsinline>
+                    <source src="https://file.recipe.site/marketing_homepage_krizkitch_01.mp4" type="video/mp4">
+                    Ваш браузер не підтримує відтворення відео.
+                </video>
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_krizkitch_02.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Krizkitch — сторінка 1" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_krizkitch_03.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Krizkitch — сторінка 2" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_krizkitch_04.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Krizkitch — сторінка 3" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_krizkitch_05.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Krizkitch — сторінка 4" />
+            </div>
+        </section>
+
+        @* ============ Mixtures ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2><a href="https://mixtures.recipe.site/" target="_blank" rel="noopener noreferrer">Mixtures, Community cookbook</a></h2>
+                <span class="tag">цифрова кулінарна книга</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_mixtures_01.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Mixtures — сторінка 1" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_mixtures_02.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Mixtures — сторінка 2" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_mixtures_03.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Mixtures — сторінка 3" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_mixtures_04.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Mixtures — сторінка 4" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_mixtures_05.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Mixtures — сторінка 5" />
+            </div>
+        </section>
+
+        @* ============ PLANS & PRICING ============ *@
+        <section class="wrap block plans" id="plans">
+            <h2>Тарифи та ціни</h2>
+
+            <div class="plan-grid">
+                <div class="plan">
+                    <h3>Особистий</h3>
+                    <p class="price">$4/місяць</p>
+                    <ul>
+                        <li>Необмежена кількість опублікованих рецептів</li>
+                    </ul>
+                    <p class="desc">Чудово підходить для особистого використання (збір та організація сімейних рецептів тощо)</p>
+                    <a class="example desc" href="#">Приклад</a>
+                    <div><a class="btn btn-black" href="#">Спробувати безкоштовно</a></div>
+                </div>
+
+                <div class="plan">
+                    <h3>Автор</h3>
+                    <p class="price">$32/місяць*</p>
+                    <ul>
+                        <li>Платний доступ і підписки</li>
+                        <li>Розсилки</li>
+                        <li>Налаштування (шрифти, кольори, логотип)</li>
+                        <li>Коментарі та оцінки</li>
+                        <li>Інтеграція реклами</li>
+                        <li>Завантаження відео</li>
+                        <li>Власний домен</li>
+                    </ul>
+                    <a class="example desc" href="#">Приклад</a>
+                    <div><a class="btn btn-black" href="#">Обрати тариф</a></div>
+                </div>
+
+                <div class="plan">
+                    <h3>Професійний</h3>
+                    <p class="price">$250–500/місяць*</p>
+                    <ul>
+                        <li>Власні сторінки</li>
+                        <li>Власний дизайн</li>
+                        <li>Власні функції</li>
+                        <li>Індивідуальне обслуговування та підтримка</li>
+                    </ul>
+                    <a class="example desc" href="#">Приклад</a>
+                    <div><a class="btn btn-black" href="#">Зв'язатися з нами</a></div>
+                </div>
+            </div>
+
+            <p class="note">*Окрім вартості тарифу, ми беремо 6% від доходу з підписок і кулінарних книг, максимум $4 000 на місяць.</p>
+        </section>
+
+        @* ============ Ryan Nordheimer ============ *@
+        <section class="wrap block showcase">
+            <div class="sc-head">
+                <h2><a href="https://www.ryannordheimer.com/" target="_blank" rel="noopener noreferrer">Ryan Nordheimer</a></h2>
+                <span class="tag">сайт</span>
+                <span class="tag">інтеграція реклами</span>
+                <span class="tag">підписки</span>
+                <div class="sc-arrows">
+                    <button class="arrow" type="button" data-dir="prev" aria-label="Попередній" disabled>
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5 5.5 9l5.5 5.5" /></svg>
+                    </button>
+                    <button class="arrow" type="button" data-dir="next" aria-label="Наступний">
+                        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5 12.5 9 7 14.5" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="carousel">
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_ryannordheimer_01.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Ryan Nordheimer — сторінка 1" />
+                <img class="big-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_ryannordheimer_02.webp%3Foptimizer%3Dimage&w=1920&q=75" alt="Ryan Nordheimer — сторінка 2" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_ryannordheimer_03.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Ryan Nordheimer — сторінка 3" />
+                <img class="little-img" src="https://www.recipe.site/_next/image?url=https%3A%2F%2Fimg.recipe.site%2Fmarketing_homepage_ryannordheimer_04.webp%3Foptimizer%3Dimage&w=640&q=75" alt="Ryan Nordheimer — сторінка 4" />
+            </div>
+        </section>
+
+        @* ============ HOW ARE WE DIFFERENT ============ *@
+        <section class="wrap block diff" id="about">
+            <div class="two-col">
+                <div>
+                    <p class="lead">
+                        Чим ми відрізняємося? Ми однаково зосереджені на <strong>роботі з рецептами</strong>
+                        (публікація та читання/приготування), <strong>дизайні</strong> та <strong>технологіях</strong>.
+                        Ми вважаємо, що наша увага до всіх трьох напрямків дозволяє нам створювати
+                        найкращі сайти з рецептами та цифрові кулінарні книги.
+                    </p>
+                    <p class="lead">
+                        Які є альтернативні інструменти? Альтернативні інструменти для публікації рецептів поділяються на дві групи:
+                        <em>універсальні конструктори сайтів</em> (WordPress, Squarespace, Wix) та
+                        <em>платформи для публікації контенту</em> (Instagram, Substack, Provecho).
+                    </p>
+                </div>
+
+                <div class="aside">
+                    <p>
+                        Наша відмінність від <em>універсальних конструкторів сайтів</em> у тому, що Recipe.Site створений спеціально для
+                        публікації рецептів та монетизації. Інші конструктори сайтів дають вам чистий шаблон і залишають вам
+                        налаштування та підтримку всього іншого — форматування рецептів, підписок, платного доступу, розсилок, реклами.
+                        Для цього доводиться поєднувати плагіни та сторонні інструменти. Ми робимо цю роботу за вас;
+                        усе вже інтегровано. Іншими словами, ми обмінюємо широку функціональність на те, щоб бути справді
+                        сильними в кількох конкретних напрямках.
+                    </p>
+                    <p>
+                        Наша відмінність від <em>платформ для публікації контенту</em> у тому, що ми не є контейнером, у якому лежить ваш
+                        контент, — ми технології, на яких побудований ваш сайт. У вас немає
+                        «профілю» або «сторінки» на нашій платформі; ви використовуєте наші інструменти, щоб створити власний сайт (або ми допомагаємо
+                        вам це зробити). Іншими словами, ми обмінюємо мережеве відкриття контенту та динаміку соціальних мереж на
+                        володіння, контроль, налаштування та незалежність.
+                    </p>
+                    @* На скриншотах виден только конец этого абзаца — начало нужно дописать. *@
+                    <p>
+                        Простіше кажучи: Recipe.Site дає вам конкретні інструменти, необхідні для ведення рецептного
+                        бізнесу, та незалежність володіння своїм сайтом і аудиторією. Більше інформації в нашій
+                        <a href="#">публікації в блозі</a>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        @* ============ PROJECT UPDATES ============ *@
+        <section class="wrap block updates">
+            <h2>Оновлення проєкту</h2>
+            <p>Кожні кілька місяців ми надсилаємо електронний лист із повідомленнями про нові функції, майбутні плани тощо.</p>
+            <form class="subscribe" action="#" method="post">
+                <input type="email" name="email" placeholder="Введіть свою електронну пошту..." aria-label="Електронна пошта" />
+                <button type="submit">Підписатися</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">
+            <div>
+                <p><a href="~/">Recipe.Site</a> — це інструмент для публікації контенту для авторів кулінарних матеріалів</p>
+                <p class="fine">Ми будемо раді почути вашу думку. Надсилайте відгуки на alex@@recipe.site</p>
+                <p>© 2026 Recipe.Site</p>
+            </div>
+            <nav class="footer-links" aria-label="Підвал сайту">
+                <a href="#">Почати</a>
+                <a href="#plans">Тарифи</a>
+                <a href="#about">Про нас</a>
+                <a asp-controller="Blogs" asp-action="Create">Блог</a>
+                <a href="#">Умови</a>
+                <a href="#">@@recipe.site</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+            (function() {
+                document.querySelectorAll('.showcase').forEach(function(section) {
+                    var track = section.querySelector('.carousel');
+                    var prev = section.querySelector('[data-dir="prev"]');
+                    var next = section.querySelector('[data-dir="next"]');
+                    if (!track || !prev || !next) return;
+
+                    function update() {
+                        var atStart = track.scrollLeft <= 1;
+                        var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+                        prev.disabled = atStart;
+                        next.disabled = atEnd && !atStart;
+                    }
+
+                    function go(dir) {
+                        track.scrollBy({ left: dir * track.clientWidth * 0.5, behavior: 'smooth' });
+                    }
+
+                    prev.addEventListener('click', function() { go(-1); });
+                    next.addEventListener('click', function() { go(1); });
+                    track.addEventListener('scroll', update, { passive: true });
+                    window.addEventListener('resize', update);
+                    update();
+                });
+            })();
+    </script>
+</body>
+</html>

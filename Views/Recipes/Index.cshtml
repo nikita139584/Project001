@@ -1,0 +1,762 @@
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+@model List<Recipe>
+
+@{
+    ViewData["Title"] = "Рецепти";
+}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/recipes.css" />
+</head>
+<body>
+    <main class="container">
+            <header class="site-header">
+        <div class="wrap">
+            <a class="logo" href="/">
+                <span class="logo-mark" aria-hidden="true"><i></i></span>
+                Recipe.Site
+            </a>
+
+            <nav class="nav" aria-label="Головна">
+                <a href="/">Головна</a>
+                <a href="/Blogs">Блог</a>
+                <a href="/Recipes">Рецепти</a>
+                <a class="btn btn-blue" href="#">Зареєструватися</a>
+            </nav>
+        </div>
+    </header>
+        <!-- =========================
+         HEADER
+         ========================= -->
+        <header class="page-header">
+            <div>
+                <h1>Рецепти</h1>
+                <p class="subtitle">Створюйте, зберігайте та переглядайте власні рецепти.</p>
+            </div>
+
+            <a href="#create-recipe" class="button button-primary">+ Додати рецепт</a>
+        </header>
+
+        <!-- =========================
+         CREATE
+         ========================= -->
+        <section class="panel" id="create-recipe">
+
+            <div class="section-header">
+                <div>
+                    <h2>Додати рецепт</h2>
+                    <p>Заповніть інформацію про страву.</p>
+                </div>
+            </div>
+
+            <form method="post" action="@Url.Action("Create", "Recipes")" id="recipe-form">
+                @Html.AntiForgeryToken()
+
+                <!-- Ці три поля реально підуть у Recipe -->
+                <input type="hidden" id="description-hidden" name="Description" />
+                <input type="hidden" id="ingredients-hidden" name="Ingredients" />
+                <input type="hidden" id="instructions-hidden" name="Instructions" />
+
+                <!-- =========================
+                 ОСНОВНА ІНФОРМАЦІЯ
+                 ========================= -->
+                <div class="form-section">
+                    <h3>Основна інформація</h3>
+
+                    <div class="form-grid">
+
+                        <div class="field field-full">
+                            <label for="Title">Назва рецепту</label>
+                            <input id="Title" name="Title" type="text" maxlength="200" required
+                                   placeholder="Наприклад: Вареники з картоплею" />
+                        </div>
+
+                        <!-- Фото -->
+                        <div class="field field-full">
+                            <label for="image-input">Фото</label>
+                            <input id="image-input" type="url" placeholder="https://example.com/photo.jpg" />
+                            <small>Вставте посилання на фотографію страви.</small>
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
+
+                        <!-- Історія -->
+                        <div class="field field-full">
+                            <label for="story-input">Історія</label>
+                            <textarea id="story-input" rows="5" placeholder="Розкажіть історію цієї страви..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- =========================
+                 КАТЕГОРІЇ
+                 ========================= -->
+                <div class="form-section">
+                    <h3>Категорії</h3>
+
+                    <div class="category-grid">
+
+                        <!-- Країна -->
+                        <div class="field">
+                            <label for="country-input">Країна / народ</label>
+                            <select id="country-input">
+                                <option value="">Оберіть країну</option>
+                                <option value="Україна">🇺🇦 Україна</option>
+                                <option value="Італія">🇮🇹 Італія</option>
+                                <option value="Франція">🇫🇷 Франція</option>
+                                <option value="Німеччина">🇩🇪 Німеччина</option>
+                                <option value="Греція">🇬🇷 Греція</option>
+                                <option value="Японія">🇯🇵 Японія</option>
+                                <option value="Мексика">🇲🇽 Мексика</option>
+                                <option value="США">🇺🇸 США</option>
+                                <option value="Інше">Інше</option>
+                            </select>
+                        </div>
+
+                        <!-- Вид блюда -->
+                        <div class="field">
+                            <label for="dish-type-input">Вид страви</label>
+                            <select id="dish-type-input">
+                                <option value="">Оберіть вид</option>
+                                <option value="Закуска">Закуска</option>
+                                <option value="Салат">Салат</option>
+                                <option value="Суп">Суп</option>
+                                <option value="Основна страва">Основна страва</option>
+                                <option value="Гарнір">Гарнір</option>
+                                <option value="Десерт">Десерт</option>
+                                <option value="Напій">Напій</option>
+                                <option value="Хлібобулочне">Хлібобулочне</option>
+                                <option value="Випічка">Випічка</option>
+                                <option value="Соус">Соус</option>
+                                <option value="Інше">Інше</option>
+                            </select>
+                        </div>
+
+                        <!-- Дієта -->
+                        <div class="field">
+                            <label for="diet-input">Дієта</label>
+                            <select id="diet-input">
+                                <option value="">Оберіть дієту</option>
+                                <option value="Без дієти">Без дієти</option>
+                                <option value="Вегетаріанська">Вегетаріанська</option>
+                                <option value="Веганська">Веганська</option>
+                                <option value="Безглютенова">Безглютенова</option>
+                                <option value="Кето">Кето</option>
+                                <option value="Пісна">Пісна</option>
+                                <option value="Низьковуглеводна">Низьковуглеводна</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- =========================
+                 INGREDIENTS
+                 ========================= -->
+                <div class="form-section">
+                    <div class="section-header-row">
+                        <div>
+                            <h3>Інгредієнти</h3>
+                            <p>Для кожного продукту можна окремо вказати кількість.</p>
+                        </div>
+                        <button type="button" class="button button-secondary" onclick="addIngredient()">
+                            + Додати інгредієнт
+                        </button>
+                    </div>
+
+                    <div id="ingredients-container">
+                        <div class="ingredient-row">
+                            <input type="text" class="ingredient-name" placeholder="Інгредієнт" required />
+                            <input type="text" class="ingredient-quantity" placeholder="Кількість" required />
+                            <input type="text" class="ingredient-unit" placeholder="г, мл, шт." />
+                            <button type="button" class="remove-button" onclick="removeIngredient(this)">×</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================
+                 STEPS
+                 ========================= -->
+                <div class="form-section">
+                    <div class="section-header-row">
+                        <div>
+                            <h3>Приготування</h3>
+                            <p>Для кожного кроку можна встановити таймер.</p>
+                        </div>
+                        <button type="button" class="button button-secondary" onclick="addStep()">
+                            + Додати крок
+                        </button>
+                    </div>
+
+                    <div id="steps-container">
+                        <div class="step-row">
+                            <div class="step-number">1</div>
+                            <div class="step-fields">
+                                <textarea class="step-text" rows="3" required placeholder="Опишіть дію..."></textarea>
+                                <div class="timer-input">
+                                    <label>Таймер</label>
+                                    <input type="number" class="step-timer" min="0" value="0" placeholder="Секунди" />
+                                    <span>секунд</span>
+                                </div>
+                            </div>
+                            <button type="button" class="remove-button" onclick="removeStep(this)">×</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================
+                 NOTES
+                 ========================= -->
+                <div class="form-section">
+                    <h3>По скриптум</h3>
+                    <div class="field">
+                        <label for="notes-input">Додаткові примітки</label>
+                        <textarea id="notes-input" rows="5"
+                                  placeholder="Поради, заміни продуктів, особливості приготування..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="button button-primary">Зберегти рецепт</button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- =========================
+         RECIPES LIST
+         ========================= -->
+        <section class="recipes-section">
+
+            <div class="section-header">
+                <div>
+                    <h2>Усі рецепти</h2>
+                    <p>Рецепти, збережені у Firebase.</p>
+                </div>
+            </div>
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="panel empty">Поки що рецептів немає.</div>
+            }
+            else
+            {
+                <div class="recipes-grid">
+                    @foreach (var recipe in Model)
+                    {
+                        string imageUrl = "";
+                        string story = "";
+                        string country = "";
+                        string dishType = "";
+                        string diet = "";
+                        string notes = "";
+
+                        try
+                        {
+                            if (!string.IsNullOrWhiteSpace(recipe.Description))
+                            {
+                                using JsonDocument descriptionJson = JsonDocument.Parse(recipe.Description);
+                                JsonElement root = descriptionJson.RootElement;
+
+                                if (root.TryGetProperty("story", out var storyProperty))
+                                    story = storyProperty.GetString() ?? "";
+
+                                if (root.TryGetProperty("imageUrl", out var imageProperty))
+                                    imageUrl = imageProperty.GetString() ?? "";
+
+                                if (root.TryGetProperty("country", out var countryProperty))
+                                    country = countryProperty.GetString() ?? "";
+
+                                if (root.TryGetProperty("dishType", out var dishTypeProperty))
+                                    dishType = dishTypeProperty.GetString() ?? "";
+
+                                if (root.TryGetProperty("diet", out var dietProperty))
+                                    diet = dietProperty.GetString() ?? "";
+
+                                if (root.TryGetProperty("notes", out var notesProperty))
+                                    notes = notesProperty.GetString() ?? "";
+                            }
+                        }
+                        catch
+                        {
+                            // Старі записи залишаться звичайним текстом.
+                            story = recipe.Description;
+                        }
+
+                        List<IngredientViewModel> ingredients = new();
+                        try
+                        {
+                            if (!string.IsNullOrWhiteSpace(recipe.Ingredients))
+                            {
+                                ingredients = JsonSerializer.Deserialize<List<IngredientViewModel>>(recipe.Ingredients)
+                                              ?? new List<IngredientViewModel>();
+                            }
+                        }
+                        catch
+                        {
+                        }
+
+                        List<StepViewModel> steps = new();
+                        try
+                        {
+                            if (!string.IsNullOrWhiteSpace(recipe.Instructions))
+                            {
+                                steps = JsonSerializer.Deserialize<List<StepViewModel>>(recipe.Instructions)
+                                        ?? new List<StepViewModel>();
+                            }
+                        }
+                        catch
+                        {
+                        }
+
+                        <article class="recipe-card">
+
+                            @if (!string.IsNullOrWhiteSpace(imageUrl))
+                            {
+                                <img src="@imageUrl" class="recipe-card-image" alt="@recipe.Title" />
+                            }
+                            else
+                            {
+                                <div class="recipe-placeholder">🍲</div>
+                            }
+
+                            <div class="recipe-card-content">
+
+                                <div class="recipe-tags">
+                                    @if (!string.IsNullOrWhiteSpace(country))
+                                    {
+                                        <span>@country</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(dishType))
+                                    {
+                                        <span>@dishType</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(diet))
+                                    {
+                                        <span>@diet</span>
+                                    }
+                                </div>
+
+                                <h2>@recipe.Title</h2>
+
+                                @if (!string.IsNullOrWhiteSpace(story))
+                                {
+                                    <p class="recipe-story">@story</p>
+                                }
+
+                                <div class="card-actions">
+                                    <button type="button" class="button button-primary" onclick="openRecipe('@recipe.RecipeId')">
+                                        Переглянути
+                                    </button>
+
+                                    <form method="post" action="@Url.Action("Delete", "Recipes", new { id = recipe.RecipeId })"
+                                          onsubmit="return confirm('Ви точно хочете видалити цей рецепт?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="button button-danger">Видалити</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </article>
+
+                        <!-- =========================
+                         RECIPE MODAL
+                         ========================= -->
+                        <div class="recipe-data" id="recipe-@recipe.RecipeId">
+                            <div class="details-content">
+
+                                <button type="button" class="close-button" onclick="closeRecipe()">×</button>
+
+                                @if (!string.IsNullOrWhiteSpace(imageUrl))
+                                {
+                                    <img src="@imageUrl" class="details-image" alt="@recipe.Title" />
+                                }
+
+                                <div class="details-tags">
+                                    @if (!string.IsNullOrWhiteSpace(country))
+                                    {
+                                        <span>@country</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(dishType))
+                                    {
+                                        <span>@dishType</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(diet))
+                                    {
+                                        <span>@diet</span>
+                                    }
+                                </div>
+
+                                <h1>@recipe.Title</h1>
+
+                                <!-- Історія -->
+                                @if (!string.IsNullOrWhiteSpace(story))
+                                {
+                                    <section class="details-section">
+                                        <h2>Історія</h2>
+                                        <p class="details-text">@story</p>
+                                    </section>
+                                }
+
+                                <!-- Інгредієнти -->
+                                <section class="details-section">
+                                    <h2>Інгредієнти</h2>
+
+                                    @if (ingredients.Count > 0)
+                                    {
+                                        <div class="details-ingredients">
+                                            @foreach (var ingredient in ingredients)
+                                            {
+                                                <div class="details-ingredient">
+                                                    <span>@ingredient.Name</span>
+                                                    <span class="ingredient-value">@ingredient.Quantity @ingredient.Unit</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>Інгредієнти не вказані.</p>
+                                    }
+                                </section>
+
+                                <!-- Приготування -->
+                                <section class="details-section">
+                                    <h2>Приготування</h2>
+
+                                    @if (steps.Count > 0)
+                                    {
+                                        <div class="details-steps">
+                                            @foreach (var step in steps)
+                                            {
+                                                <div class="details-step">
+                                                    <div class="details-step-number">@step.Number</div>
+                                                    <div class="details-step-content">
+                                                        <p>@step.Text</p>
+
+                                                        @if (step.TimerSeconds > 0)
+                                                        {
+                                                            <div class="timer" data-seconds="@step.TimerSeconds">
+                                                                <div class="timer-display">
+                                                                    @TimeSpan.FromSeconds(step.TimerSeconds).ToString(@"mm\:ss")
+                                                                </div>
+                                                                <button type="button" class="button button-primary timer-start">
+                                                                    ▶ Запустити
+                                                                </button>
+                                                                <button type="button" class="button button-secondary timer-reset">
+                                                                    Скинути
+                                                                </button>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>Кроки приготування не вказані.</p>
+                                    }
+                                </section>
+
+                                <!-- По скриптум -->
+                                @if (!string.IsNullOrWhiteSpace(notes))
+                                {
+                                    <section class="details-section notes-section">
+                                        <h2>По скриптум</h2>
+                                        <p class="details-text">@notes</p>
+                                    </section>
+                                }
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+        </section>
+
+    </main>
+
+    <!-- =========================
+     JAVASCRIPT
+     ========================= -->
+    <script>
+
+            /* =========================
+               INGREDIENTS
+               ========================= */
+
+            function addIngredient() {
+                const container = document.getElementById("ingredients-container");
+
+                const row = document.createElement("div");
+                row.className = "ingredient-row";
+                row.innerHTML = `
+                        <input type="text" class="ingredient-name" placeholder="Інгредієнт" required />
+                        <input type="text" class="ingredient-quantity" placeholder="Кількість" required />
+                        <input type="text" class="ingredient-unit" placeholder="г, мл, шт." />
+                        <button type="button" class="remove-button" onclick="removeIngredient(this)">×</button>
+                    `;
+
+                container.appendChild(row);
+            }
+
+            function removeIngredient(button) {
+                const rows = document.querySelectorAll("#ingredients-container .ingredient-row");
+                if (rows.length <= 1) {
+                    return;
+                }
+
+                button.closest(".ingredient-row").remove();
+            }
+
+            /* =========================
+               STEPS
+               ========================= */
+
+            function addStep() {
+                const container = document.getElementById("steps-container");
+                const index = container.querySelectorAll(".step-row").length + 1;
+
+                const row = document.createElement("div");
+                row.className = "step-row";
+                row.innerHTML = `
+                        <div class="step-number">${index}</div>
+                        <div class="step-fields">
+                            <textarea class="step-text" rows="3" required placeholder="Опишіть дію..."></textarea>
+                            <div class="timer-input">
+                                <label>Таймер</label>
+                                <input type="number" class="step-timer" min="0" value="0" placeholder="Секунди" />
+                                <span>секунд</span>
+                            </div>
+                        </div>
+                        <button type="button" class="remove-button" onclick="removeStep(this)">×</button>
+                    `;
+
+                container.appendChild(row);
+                renumberSteps();
+            }
+
+            function removeStep(button) {
+                const rows = document.querySelectorAll("#steps-container .step-row");
+                if (rows.length <= 1) {
+                    return;
+                }
+
+                button.closest(".step-row").remove();
+                renumberSteps();
+            }
+
+            function renumberSteps() {
+                const rows = document.querySelectorAll("#steps-container .step-row");
+
+                rows.forEach(function(row, index) {
+                    const number = row.querySelector(".step-number");
+                    number.textContent = index + 1;
+                });
+            }
+
+            /* =========================
+               IMAGE PREVIEW
+               ========================= */
+
+            const imageInput = document.getElementById("image-input");
+            const imagePreview = document.getElementById("image-preview");
+
+            imageInput.addEventListener("input", function() {
+                const url = imageInput.value.trim();
+
+                if (!url) {
+                    imagePreview.innerHTML = "";
+                    imagePreview.style.display = "none";
+                    return;
+                }
+
+                imagePreview.innerHTML = `
+                        <img src="${url}" alt="Попередній перегляд"
+                             onload="this.style.display='block'"
+                             onerror="this.style.display='none'" />
+                    `;
+
+                imagePreview.style.display = "block";
+            });
+
+            /* =========================
+               SAVE STRUCTURED DATA
+               ========================= */
+
+            const form = document.getElementById("recipe-form");
+
+            form.addEventListener("submit", function() {
+
+                /* Description */
+                const descriptionData = {
+                    story: document.getElementById("story-input").value,
+                    imageUrl: document.getElementById("image-input").value,
+                    country: document.getElementById("country-input").value,
+                    dishType: document.getElementById("dish-type-input").value,
+                    diet: document.getElementById("diet-input").value,
+                    notes: document.getElementById("notes-input").value
+                };
+
+                document.getElementById("description-hidden").value = JSON.stringify(descriptionData);
+
+                /* Ingredients */
+                const ingredients = [];
+
+                document.querySelectorAll("#ingredients-container .ingredient-row").forEach(function(row) {
+                    const name = row.querySelector(".ingredient-name").value.trim();
+                    const quantity = row.querySelector(".ingredient-quantity").value.trim();
+                    const unit = row.querySelector(".ingredient-unit").value.trim();
+
+                    if (name || quantity || unit) {
+                        ingredients.push({ name: name, quantity: quantity, unit: unit });
+                    }
+                });
+
+                document.getElementById("ingredients-hidden").value = JSON.stringify(ingredients);
+
+                /* Instructions / steps */
+                const steps = [];
+
+                document.querySelectorAll("#steps-container .step-row").forEach(function(row, index) {
+                    const text = row.querySelector(".step-text").value.trim();
+                    const timer = parseInt(row.querySelector(".step-timer").value, 10) || 0;
+
+                    if (text) {
+                        steps.push({ number: index + 1, text: text, timerSeconds: timer });
+                    }
+                });
+
+                document.getElementById("instructions-hidden").value = JSON.stringify(steps);
+            });
+
+            /* =========================
+               OPEN RECIPE
+               ========================= */
+
+            function openRecipe(id) {
+                const recipe = document.getElementById("recipe-" + id);
+                if (!recipe) {
+                    return;
+                }
+
+                recipe.classList.add("active");
+                document.body.classList.add("modal-open");
+                setupTimers(recipe);
+            }
+
+            function closeRecipe() {
+                document.querySelectorAll(".recipe-data").forEach(function(element) {
+                    element.classList.remove("active");
+                });
+
+                document.body.classList.remove("modal-open");
+            }
+
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "Escape") {
+                    closeRecipe();
+                }
+            });
+
+            /* =========================
+               TIMERS
+               ========================= */
+
+            function setupTimers(recipe) {
+                recipe.querySelectorAll(".timer").forEach(function(timer) {
+                    if (timer.dataset.initialized === "true") {
+                        return;
+                    }
+                    timer.dataset.initialized = "true";
+
+                    const originalSeconds = parseInt(timer.dataset.seconds, 10);
+                    let remaining = originalSeconds;
+                    let interval = null;
+
+                    const display = timer.querySelector(".timer-display");
+                    const startButton = timer.querySelector(".timer-start");
+                    const resetButton = timer.querySelector(".timer-reset");
+
+                    display.textContent = formatTime(remaining);
+
+                    startButton.addEventListener("click", function() {
+                        if (interval !== null) {
+                            return;
+                        }
+
+                        startButton.textContent = "⏸ Працює";
+
+                        interval = setInterval(function() {
+                            remaining--;
+                            display.textContent = formatTime(remaining);
+
+                            if (remaining <= 0) {
+                                clearInterval(interval);
+                                interval = null;
+                                startButton.textContent = "✓ Готово";
+                                timer.classList.add("finished");
+                            }
+                        }, 1000);
+                    });
+
+                    resetButton.addEventListener("click", function() {
+                        if (interval !== null) {
+                            clearInterval(interval);
+                            interval = null;
+                        }
+
+                        remaining = originalSeconds;
+                        display.textContent = formatTime(remaining);
+                        startButton.textContent = "▶ Запустити";
+                        timer.classList.remove("finished");
+                    });
+                });
+            }
+
+            function formatTime(totalSeconds) {
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+
+                return String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+            }
+
+    </script>
+
+@functions {
+
+    public class IngredientViewModel
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = "";
+
+        [JsonPropertyName("quantity")]
+        public string Quantity { get; set; } = "";
+
+        [JsonPropertyName("unit")]
+        public string Unit { get; set; } = "";
+    }
+
+    public class StepViewModel
+    {
+        [JsonPropertyName("number")]
+        public int Number { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; } = "";
+
+        [JsonPropertyName("timerSeconds")]
+        public int TimerSeconds { get; set; }
+    }
+
+}
+</body>
+</html>
