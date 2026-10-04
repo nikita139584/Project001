@@ -17,7 +17,9 @@ namespace Project001.Controllers
             return View(await _blogService.GetAllAsync());
         }
 
-        // GET: Blogs/Details/id
+        // GET: Blogs/
+        //
+        // /id
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null)

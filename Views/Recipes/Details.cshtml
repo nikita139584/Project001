@@ -1,4 +1,11 @@
-﻿@page
-@model Project001.Views.Recipes.DetailsModel
-@{
-}
+﻿@model Recipe
+
+<h1>@Model.Title</h1>
+
+<p>@Model.Description</p>
+
+<h2>Ингредиенты</h2>
+<p>@Model.Ingredients</p>
+
+<h2>Приготовление</h2>
+<p>@Model.Instructions</p>

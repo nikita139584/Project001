@@ -1,11 +1,19 @@
+/* ==========================================================================
+   Recipe.Site — стили лендинга
+   ========================================================================== */
+
+/* ---------- Переменные и сброс ---------- */
 :root {
     --ink: #000;
     --muted: #5b5b5b;
     --line: #d9d9d9;
     --soft: #f5f5f5;
     --blue: #2b6ed7;
+    --blue-dark: #2358b0;
     --green: #005c1f;
     --sys: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* высота карточек в каруселях; на мобильных уменьшается */
+    --card-h: 440px;
 }
 
 *, *::before, *::after {
@@ -14,6 +22,8 @@
 
 html {
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px; /* чтобы заголовок не прятался под шапкой при переходе по якорю */
 }
 
 body {
@@ -22,6 +32,7 @@ body {
     color: var(--ink);
     font: 400 20px/1.4 var(--sys);
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -47,13 +58,22 @@ img, video {
     margin-inline: auto;
 }
 
-/* ---------- Header ---------- */
-.site-header .wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0;
+/* ---------- Шапка ---------- */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid transparent;
 }
+
+    .site-header .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+    }
 
 .logo {
     display: flex;
@@ -92,6 +112,12 @@ img, video {
         font-weight: 500;
     }
 
+        .nav a:not(.btn):hover {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+/* ---------- Кнопки ---------- */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -103,6 +129,8 @@ img, video {
     font-family: inherit;
     font-size: inherit;
     cursor: pointer;
+    text-decoration: none;
+    transition: background-color .15s;
 }
 
 .btn-blue {
@@ -112,14 +140,21 @@ img, video {
     padding: 0 18px;
 }
 
+    .btn-blue:hover {
+        background: var(--blue-dark);
+    }
+
 .btn-black {
     background: #000;
     color: #fff;
     height: 43px;
-    text-decoration: none;
 }
 
-/* ---------- Hero ---------- */
+    .btn-black:hover {
+        background: #2a2a2a;
+    }
+
+/* ---------- Главный экран ---------- */
 .hero {
     display: grid;
     grid-template-columns: minmax(0, 735px) 1fr;
@@ -133,6 +168,7 @@ img, video {
     aspect-ratio: 735 / 799;
     object-fit: cover;
     border-radius: 14px;
+    background: var(--soft);
 }
 
 .hero-copy {
@@ -144,20 +180,22 @@ img, video {
     line-height: 56px;
     font-weight: 400;
     letter-spacing: -.005em;
+    text-wrap: balance;
 }
 
 .features {
     display: flex;
+    gap: 24px;
     margin-top: 55px;
     color: var(--muted);
     line-height: 35px;
 }
 
     .features ul {
-        width: 244px;
+        min-width: 244px;
     }
 
-/* ---------- Showcase (example sites) ---------- */
+/* ---------- Блоки страницы ---------- */
 .block {
     border-top: 1px solid var(--line);
 }
@@ -166,6 +204,7 @@ img, video {
     margin-top: 60px;
 }
 
+/* ---------- Примеры сайтов (карусели) ---------- */
 .showcase {
     padding: 64px 0 60px;
 }
@@ -173,7 +212,8 @@ img, video {
 .sc-head {
     display: flex;
     align-items: center;
-    gap: 13px;
+    flex-wrap: wrap;
+    gap: 10px 13px;
     margin-bottom: 31px;
 }
 
@@ -190,6 +230,7 @@ img, video {
 
             .sc-head h2 a:hover {
                 text-decoration: underline;
+                text-underline-offset: 4px;
             }
 
 .tag {
@@ -203,7 +244,7 @@ img, video {
 .sc-arrows {
     margin-left: auto;
     display: flex;
-    gap: 23px;
+    gap: 16px;
 }
 
 .arrow {
@@ -217,7 +258,12 @@ img, video {
     display: grid;
     place-items: center;
     cursor: pointer;
+    transition: background-color .15s;
 }
+
+    .arrow:hover:not(:disabled) {
+        background: #e6e6e6;
+    }
 
     .arrow:disabled {
         background: #fcfcfc;
@@ -230,12 +276,15 @@ img, video {
         height: 18px;
     }
 
+/* Лента прокручивается вправо до края экрана */
 .carousel {
     display: flex;
     gap: 62px;
     padding-left: 10px;
     overflow-x: auto;
     margin-right: calc(50% - 50vw);
+    scroll-snap-type: x proximity;
+    scroll-padding-left: 10px;
     scrollbar-width: none;
 }
 
@@ -246,36 +295,31 @@ img, video {
     .carousel img,
     .carousel video {
         flex: none;
+        height: var(--card-h);
         object-fit: cover;
         border-radius: 11px;
-        background: var(--soft); /* видно, пока грузится */
+        background: var(--soft); /* виден, пока грузится */
+        scroll-snap-align: start;
     }
 
-/* --- Единая сетка размеров для карусель-секцій прикладів сайтів
-     (h woo, Rome, Cheffin' with Zach, Krizkitch, Mixtures, Ryan Nordheimer).
-     Висота у всіх однакова (440px), відрізняється лише ширина.
-     .video-card — під <video>, трохи вужче за маленьке фото. */
+/* Размеры карточек: одинаковая высота, разная ширина (через пропорции) */
 .video-card {
-    width: 200px;
-    height: 440px;
+    aspect-ratio: 200 / 440;
 }
 
 .little-img {
-    width: 233px;
-    height: 440px;
+    aspect-ratio: 233 / 440;
 }
 
 .normal-img {
-    width: 350px;
-    height: 440px;
+    aspect-ratio: 350 / 440;
 }
 
 .big-img {
-    width: 770px;
-    height: 440px;
+    aspect-ratio: 770 / 440;
 }
 
-/* ---------- Intro + demo video ---------- */
+/* ---------- Про продукт ---------- */
 .intro {
     padding: 80px 0 100px;
 }
@@ -290,6 +334,7 @@ img, video {
 .lead {
     font-size: 33px;
     line-height: 45.7px;
+    text-wrap: pretty;
 }
 
 .aside p {
@@ -302,6 +347,10 @@ img, video {
         margin-bottom: 0;
     }
 
+    .aside p a {
+        color: var(--blue);
+    }
+
 .intro-video {
     margin-top: 79px;
     width: 565px;
@@ -312,7 +361,7 @@ img, video {
     background: var(--soft);
 }
 
-/* ---------- Plans ---------- */
+/* ---------- Тарифи ---------- */
 .plans {
     padding: 104px 0 99px;
 }
@@ -330,32 +379,42 @@ img, video {
     column-gap: 140px;
 }
 
-.plan h3 {
-    font-size: 27px;
-    line-height: 32px;
-    font-weight: 500;
-    margin-bottom: 12px;
+.plan {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-.plan .price {
-    font-weight: 600;
-    line-height: 27.5px;
-    margin-bottom: 10px;
-}
+    .plan h3 {
+        font-size: 27px;
+        line-height: 32px;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
 
-.plan li, .plan .desc {
-    line-height: 27.5px;
-    margin-bottom: 5px;
-}
+    .plan .price {
+        font-weight: 600;
+        line-height: 27.5px;
+        margin-bottom: 10px;
+    }
 
-.plan a.example {
-    display: block;
-    color: var(--muted);
-}
+    .plan li,
+    .plan .desc {
+        line-height: 27.5px;
+        margin-bottom: 5px;
+    }
 
-.plan .btn-black {
-    margin-top: 25px;
-}
+    .plan a.example {
+        color: var(--muted);
+    }
+
+        .plan a.example:hover {
+            color: var(--ink);
+        }
+
+    .plan .btn-black {
+        margin-top: 25px;
+    }
 
 .plans .note {
     margin-top: 96px;
@@ -364,20 +423,16 @@ img, video {
     line-height: 27.5px;
 }
 
-/* ---------- Different ---------- */
+/* ---------- Чим відрізняємось ---------- */
 .diff {
     padding: 101px 0 60px;
 }
-
-    .diff .lead + .lead {
-        margin-top: 40px;
-    }
 
     .diff .lead strong {
         font-weight: 700;
     }
 
-/* ---------- Updates ---------- */
+/* ---------- Підписка на новини ---------- */
 .updates {
     padding: 64px 0 120px;
     text-align: center;
@@ -431,9 +486,14 @@ img, video {
         color: #fff;
         font: 500 20px var(--sys);
         cursor: pointer;
+        transition: background-color .15s;
     }
 
-/* ---------- Footer ---------- */
+        .subscribe button:hover {
+            background: #2a2a2a;
+        }
+
+/* ---------- Футер ---------- */
 .site-footer {
     background: var(--soft);
     padding: 60px 0;
@@ -455,8 +515,8 @@ img, video {
             margin-bottom: 0;
         }
 
-    .site-footer .fine {
-        max-width: 420px;
+    .site-footer a:hover {
+        color: var(--ink);
     }
 
 .footer-links {
@@ -473,13 +533,29 @@ img, video {
             margin-bottom: 0;
         }
 
-a:focus-visible, button:focus-visible {
+/* ---------- Доступність ---------- */
+a:focus-visible,
+button:focus-visible {
     outline: 2px solid var(--blue);
     outline-offset: 2px;
 }
 
-/* ---------- Responsive ---------- */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    * {
+        transition: none !important;
+    }
+}
+
+/* ---------- Планшет ---------- */
 @media (max-width: 1000px) {
+    :root {
+        --card-h: 340px;
+    }
+
     .hero {
         grid-template-columns: 1fr;
         row-gap: 32px;
@@ -503,6 +579,7 @@ a:focus-visible, button:focus-visible {
     }
 
         .features ul {
+            min-width: 0;
             width: 50%;
         }
 
@@ -514,6 +591,15 @@ a:focus-visible, button:focus-visible {
     .lead {
         font-size: 26px;
         line-height: 1.4;
+    }
+
+    .intro,
+    .diff {
+        padding-top: 56px;
+    }
+
+    .plans {
+        padding: 64px 0;
     }
 
     .plan-grid {
@@ -535,5 +621,33 @@ a:focus-visible, button:focus-visible {
 
     .nav {
         gap: 16px;
+    }
+
+    .carousel {
+        gap: 24px;
+    }
+}
+
+/* ---------- Телефон ---------- */
+@media (max-width: 560px) {
+    :root {
+        --card-h: 280px;
+    }
+
+    body {
+        font-size: 18px;
+    }
+
+    .intro-video {
+        height: auto;
+        aspect-ratio: 565 / 450;
+    }
+
+    .sc-arrows {
+        display: none; /* на телефоне лента листается пальцем */
+    }
+
+    .nav a:not(.btn) {
+        display: none;
     }
 }
