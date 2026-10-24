@@ -652,3 +652,69 @@ button:focus-visible {
         display: none;
     }
 }
+
+/* ===== Аутентификация: приветствие в шапке, кнопка выхода, форма входа ===== */
+
+.nav .user-greeting {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.nav .logout-form {
+    display: inline;
+    margin: 0;
+}
+
+.nav .logout-button {
+    background: none;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.nav .logout-button:hover {
+    opacity: .75;
+}
+
+.auth-block {
+    max-width: 420px;
+    margin-inline: auto;
+}
+
+.auth-form .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+}
+
+.auth-form .form-row-inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font: inherit;
+}
+
+.auth-form .field-error {
+    color: #c0392b;
+    font-size: .9em;
+}
+
+.auth-submit {
+    padding: 8px 20px;
+    border: 0;
+    border-radius: 6px;
+    font: inherit;
+    cursor: pointer;
+}

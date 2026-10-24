@@ -20,9 +20,21 @@
             <nav class="nav" aria-label="Головна">
                 <a href="/Blogs">Блог</a>
                 <a href="/Recipes">Рецепти</a>
-                <a href="/Form">Регестрация</a>
                 <a href="/Preferences">Форма</a>
 
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <span class="user-greeting">Привет, @User.Identity.Name!</span>
+                    <form asp-controller="Account" asp-action="Logout"
+                          method="post" class="logout-form">
+                        <button type="submit" class="logout-button">Выйти</button>
+                    </form>
+                }
+                else
+                {
+                    <a href="/Form">Регистрация</a>
+                    <a href="/Account/Login">Вход</a>
+                }
             </nav>
         </div>
     </header>

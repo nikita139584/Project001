@@ -90,8 +90,23 @@
                 <a href="/Blogs">@Localizer["Blog"]</a>
                 <a href="/Recipes">@Localizer["Recipes"]</a>
 
-                <a href="/Form">@Localizer["Register"]</a>
                 <a href="/Preferences">@Localizer["Preferences"]</a>
+
+                @* Эта страница идёт мимо _Layout (Layout = null),
+                   поэтому приветствие приходится повторять здесь. *@
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <span class="user-greeting">Привет, @User.Identity.Name!</span>
+                    <form asp-controller="Account" asp-action="Logout"
+                          method="post" class="logout-form">
+                        <button type="submit" class="logout-button">Выйти</button>
+                    </form>
+                }
+                else
+                {
+                    <a href="/Form">@Localizer["Register"]</a>
+                    <a href="/Account/Login">Вход</a>
+                }
 
 
    

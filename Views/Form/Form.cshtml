@@ -26,7 +26,7 @@
         {
             <div class="form-alert" role="alert">@Err("")</div>
         }
-<form id="prefForm" asp-controller="Preferences" asp-action="Index" method="post" novalidate>
+<form id="regForm" asp-controller="Form" asp-action="Register" method="post" novalidate>
     @Html.AntiForgeryToken()
 
             <fieldset class="group">
@@ -74,6 +74,20 @@
                     <input id="email" name="email" type="email" placeholder="name@example.com" maxlength="120"
                            autocomplete="email" value="@Model.Email" class="@InvalidClass("Email")" />
                     <span class="error" data-error-for="email">@Err("Email")</span>
+                </div>
+
+                <div class="field">
+                    <label for="password">@Localizer["Пароль *"]</label>
+                    <input id="password" name="password" type="password" minlength="6" maxlength="100"
+                           autocomplete="new-password" class="@InvalidClass("Password")" />
+                    <span class="error" data-error-for="password">@Err("Password")</span>
+                </div>
+
+                <div class="field">
+                    <label for="confirmPassword">@Localizer["Повторите пароль *"]</label>
+                    <input id="confirmPassword" name="confirmPassword" type="password" maxlength="100"
+                           autocomplete="new-password" class="@InvalidClass("ConfirmPassword")" />
+                    <span class="error" data-error-for="confirmPassword">@Err("ConfirmPassword")</span>
                 </div>
 
                 <div class="field">
@@ -160,7 +174,7 @@
                 phone: function (f) {
                     var v = f.phone.value.trim();
                     if (!v) return "Введите телефон";
-                    if (!/^\+?[0-9]{12,15}$/.test(v)) return "Некорректный номер телефона";
+                    if (!/^\+?[0-9]{9,15}$/.test(v)) return "Некорректный номер телефона";
                     return "";
                 },
                 birthDate: function (f) {

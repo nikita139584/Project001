@@ -4,6 +4,7 @@ using Google.Cloud.Firestore;
 using Project001.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 namespace Project001;
 
 public class Program
@@ -36,11 +37,17 @@ public class Program
         // Регистрация пользователей
         builder.Services.AddScoped<IRegistrationStore, RegistrationRepository>();
 
-        builder.Services.AddControllersWithViews();
-        builder.Services.AddLocalization(options =>
-        {
-            options.ResourcesPath = "Resources";
-        });
+        // Аутентификация по cookie: держит сессию пользователя между запросами.
+        builder.Services
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/Login";
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                options.SlidingExpiration = true;
+            });
 
         builder.Services
             .AddControllersWithViews()
@@ -80,6 +87,9 @@ public class Program
 
         app.UseHttpsRedirection();
         app.UseRouting();
+
+        // Порядок важен: сначала кто пользователь, потом что ему можно.
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapStaticAssets();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Project001.Controllers
 {
@@ -38,12 +39,16 @@ namespace Project001.Controllers
         }
 
         // GET: Blogs/Create
+        // Создать блог может только вошедший пользователь.
+        // Гостя [Authorize] отправит на /Account/Login и вернёт обратно.
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Blogs/Create
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Blog blog)

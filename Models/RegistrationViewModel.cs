@@ -23,6 +23,19 @@ public class RegistrationViewModel
     [StringLength(120)]
     public string Email { get; set; } = "";
 
+    [Required(ErrorMessage = "Придумайте пароль")]
+    [StringLength(100, MinimumLength = 6,
+        ErrorMessage = "Пароль: от 6 до 100 символов")]
+    [DataType(DataType.Password)]
+    [Display(Name = "Пароль")]
+    public string Password { get; set; } = "";
+
+    [Required(ErrorMessage = "Повторите пароль")]
+    [DataType(DataType.Password)]
+    [Compare(nameof(Password), ErrorMessage = "Пароли не совпадают")]
+    [Display(Name = "Повторите пароль")]
+    public string ConfirmPassword { get; set; } = "";
+
     [Required(ErrorMessage = "Введите телефон")]
     [StringLength(30)]
     public string Phone { get; set; } = "";

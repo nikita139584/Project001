@@ -41,6 +41,7 @@ public class RegistrationRepository : IRegistrationStore
             ["Name"] = model.Name.Trim(),
             ["Email"] = model.Email.Trim(),
             ["EmailNormalized"] = normalizedEmail,
+            ["PasswordHash"] = PasswordHasher.Hash(model.Password),
             ["Phone"] = model.Phone.Trim(),
             ["Country"] = model.Country,
             ["CreatedAt"] = Timestamp.GetCurrentTimestamp()
@@ -59,6 +60,42 @@ public class RegistrationRepository : IRegistrationStore
             .AddAsync(data, ct);
 
         return document.Id;
+    }
+
+    public async Task<StoredUser?> FindByEmailAsync(
+        string email,
+        CancellationToken ct)
+    {
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+
+        var query = _firestore
+            .Collection(CollectionName)
+            .WhereEqualTo("EmailNormalized", normalizedEmail)
+            .Limit(1);
+
+        var snapshot = await query.GetSnapshotAsync(ct);
+        var document = snapshot.Documents.FirstOrDefault();
+
+        if (document is null)
+        {
+            return null;
+        }
+
+        // Записи, созданные до появления паролей, остаются без PasswordHash —
+        // войти по ним нельзя, но и падать на них не нужно.
+        var name = document.ContainsField("Name")
+            ? document.GetValue<string>("Name")
+            : "";
+
+        var storedEmail = document.ContainsField("Email")
+            ? document.GetValue<string>("Email")
+            : email.Trim();
+
+        var passwordHash = document.ContainsField("PasswordHash")
+            ? document.GetValue<string>("PasswordHash")
+            : "";
+
+        return new StoredUser(document.Id, name, storedEmail, passwordHash);
     }
 }
 

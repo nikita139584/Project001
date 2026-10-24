@@ -1,0 +1,38 @@
+@model Project001.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<section class="wrap block auth-block">
+    <h1>Вход</h1>
+
+    <form asp-controller="Account" asp-action="Login" method="post" class="auth-form">
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <div asp-validation-summary="ModelOnly" class="field-error"></div>
+
+        <div class="form-row">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email" autocomplete="username" />
+            <span asp-validation-for="Email" class="field-error"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" autocomplete="current-password" />
+            <span asp-validation-for="Password" class="field-error"></span>
+        </div>
+
+        <div class="form-row form-row-inline">
+            <input asp-for="RememberMe" type="checkbox" id="RememberMe" />
+            <label asp-for="RememberMe" for="RememberMe"></label>
+        </div>
+
+        <button type="submit" class="auth-submit">Войти</button>
+    </form>
+
+    <p class="auth-hint">
+        Нет аккаунта?
+        <a asp-controller="Form" asp-action="Index">Зарегистрироваться</a>
+    </p>
+</section>

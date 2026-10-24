@@ -1,7 +1,10 @@
 ﻿
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Project001.Models;
 using Project001.Services;
+using System.Security.Claims;
 
 
 namespace Project001.Controllers;
@@ -67,6 +70,24 @@ public class FormController : Controller
 
             _logger.LogInformation(
                 "Registration saved to Firestore: {Id}", id);
+
+            // Сразу входим под новым пользователем: после регистрации
+            // человек должен увидеть приветствие, а не форму входа.
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, id),
+                new(ClaimTypes.Name, model.Name.Trim()),
+                new(ClaimTypes.Email, model.Email.Trim())
+            };
+
+            var identity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity),
+                new AuthenticationProperties { IsPersistent = true });
         }
         catch (Exception ex)
         {

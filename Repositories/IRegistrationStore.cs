@@ -9,4 +9,10 @@ public interface IRegistrationStore
     Task<string> SaveAsync(
         RegistrationViewModel model,
         CancellationToken ct);
+
+    /// <summary>
+    /// Ищет пользователя по почте для проверки входа.
+    /// Возвращает null, если такого нет.
+    /// </summary>
+    Task<StoredUser?> FindByEmailAsync(string email, CancellationToken ct);
 }

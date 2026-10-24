@@ -17,6 +17,12 @@
     </PackageReference>
   </ItemGroup>
 	<ItemGroup>
+		<!-- Ключ Firebase не лежит в репозитории (он в .gitignore).
+		     Положите firebase-service-account.json в корень проекта —
+		     эта строка скопирует его в bin, куда его ждёт Program.cs. -->
+		<None Update="firebase-service-account.json" CopyToOutputDirectory="PreserveNewest" Condition="Exists('firebase-service-account.json')" />
+	</ItemGroup>
+	<ItemGroup>
 		<Compile Remove="Project001.Tests/**/*.cs" />
 		<Content Remove="Project001.Tests/**" />
 		<EmbeddedResource Remove="Project001.Tests/**" />
